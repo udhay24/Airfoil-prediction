@@ -30,13 +30,16 @@ import time
 # %% load data
 data = scipy.io.loadmat('../data/parsed_data/1_300.mat')
 data_x, data_y, rNorm = data['data_x'], data['data_y'], data['Normalization_Factor']
-num_data = np.shape(data_x)[0]
-train_x, train_y = data_x[:int(0.7 * num_data)], data_y[:int(0.7 * num_data)]
+num_data: int = np.shape(data_x)[0]
+print("Num of data points : " + str(num_data))
+train_x, train_y = data_x[:int(0.7 * num_data)], data_y[:int(0.7 * num_data)]  # 70% of the data is used in training
+# the model
 valid_x, valid_y = data_x[int(0.2 * num_data):int(0.9 * num_data)], data_y[int(0.2 * num_data):int(0.9 * num_data)]
 test_x, test_y = data_x[int(0.9 * num_data):], data_y[int(0.9 * num_data):]
 
 
 # %%
+# define neural network classification layers
 class Net1(nn.Module):
     def __init__(self):
         super(Net1, self).__init__()
@@ -76,7 +79,6 @@ class Net1(nn.Module):
         )
         self.fc2 = nn.Linear(400, 1)
 
-    # %%
     def forward(self, x):
         f1 = self.conv1(x)
         f2 = self.conv2(f1)
@@ -89,6 +91,7 @@ class Net1(nn.Module):
 
 
 # %%
+# set neural network parameters
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # set up parameters
 batch_size = 50
@@ -96,6 +99,7 @@ learning_rate = 0.00001
 num_epochs = 5  # 30
 
 # %%
+# convet the dataframe into pytorch tensors
 train_x = torch.from_numpy(train_x).float()
 train_y = torch.from_numpy(train_y).float()
 valid_x = torch.from_numpy(valid_x).float()
@@ -104,11 +108,13 @@ test_x = torch.from_numpy(test_x).float()
 test_y = torch.from_numpy(test_y).float()
 
 # %%
+# combine the features and output into the datasets
 train_dataset = torch.utils.data.TensorDataset(train_x, train_y)
 valid_dataset = torch.utils.data.TensorDataset(valid_x, valid_y)
 test_dataset = torch.utils.data.TensorDataset(test_x, test_y)
 
 # %%
+# convert the dataset into pytorch dataloader
 train_dataloader = torch.utils.data.DataLoader(
     dataset=train_dataset,
     batch_size=batch_size,
@@ -122,8 +128,12 @@ valid_dataloader = torch.utils.data.DataLoader(
 test_dataloader = torch.utils.data.DataLoader(
     dataset=test_dataset
 )
+
+#%%
+# combine the convolution sequential layer into neural networks
 neural_net = Net1().to(device)
 
+# set up validation parameters for the network
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(neural_net.parameters(), learning_rate)
 lossList = []
@@ -131,15 +141,16 @@ accList = []
 valid_lossList = []
 valid_accList = []
 
+# start fitting the data
 for epoch in range(num_epochs):
     loss_sum_train = 0
     loss_sum_valid = 0
     acc_sum = 0
 
     for iteration, (images, labels) in enumerate(train_dataloader):
-        x_batch = torch.autograd.Variable(images)
+        x_batch = torch.Tensor(images)
         x_batch = x_batch.reshape(-1, 1, 128, 128)
-        y_batch = torch.autograd.Variable(labels)
+        y_batch = torch.Tensor(labels)
         x_batch = x_batch.to(device)
         y_batch = y_batch.to(device)
 
@@ -156,8 +167,8 @@ for epoch in range(num_epochs):
     accList.append(acc_epoch)
 
     for (images, labels) in valid_dataloader:
-        labels = torch.autograd.Variable(labels)
-        images = torch.autograd.Variable(images)
+        labels = torch.Tensor(labels)
+        images = torch.Tensor(images)
         images = images.reshape(-1, 1, 128, 128)
         images = images.to(device)
         labels = labels.to(device)
@@ -167,7 +178,7 @@ for epoch in range(num_epochs):
     valid_lossList.append(loss_sum_valid)
     print('Epoch: ', epoch, '| train loss: %.6f | valid loss: %.6f  ' % (loss_sum_train, loss_sum_valid))
 
-# %%
+# %% plot the training results
 plt.figure()
 line1, = plt.plot(range(num_epochs), lossList, label='Train Loss')
 line2, = plt.plot(range(num_epochs), valid_lossList, label='Validation Loss')
@@ -176,13 +187,13 @@ plt.ylabel('Loss')
 plt.legend([line1, line2], ['Train Loss', 'Validation Loss'])
 plt.title('Train & Valid Loss v/s Epoch')
 
-# test
+#%% test the results
 start = time.time()
 num = len(test_dataloader)
 predyList = []
 testyList = []
 for (images, labels) in test_dataloader:
-    images = torch.autograd.Variable(images)
+    images = torch.Tensor(images)
     images = images.reshape(-1, 1, 128, 128)
     pred = neural_net(images.to(device))
     predy = pred
