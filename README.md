@@ -33,9 +33,3 @@ python CNN.py
  <img src="https://github.com/ziliHarvey/CNN--based-aerodynamics-parameters-prediction-method/raw/master/result/loss_vs_epoch.png" width="50%" height="50%">
  <img src="https://github.com/ziliHarvey/CNN--based-aerodynamics-parameters-prediction-method/raw/master/result/local_result.png" width="50%" height="50%">
  </p>
-
-## _Licence_  
-The source code is released under MIT Licence.  
-This research is led by Haolin Liu [@HaolinCMU](https://github.com/HaolinCMU), Zi Li and Fei Lu [@fei123ilike](https://github.com/fei123ilike).  
-Please cite properly when refer to our contents and parsed dataset in the report.  
-Welcome to contact me at zili@andrew.cmu.edu for any question or suggestion.
