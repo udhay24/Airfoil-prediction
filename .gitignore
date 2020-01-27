@@ -3,7 +3,7 @@
 *.xml
 *.mat
 *.csv
-/data/raw_data/figure_128x128/
+/data/raw_data/figure_128x128
 /.idea/
 
 

@@ -26,7 +26,7 @@ import scipy.io
 import time
 
 # %% load data
-data = scipy.io.loadmat('./all_data.mat')
+data = scipy.io.loadmat('../data/parsed_data/1_300.mat')
 data_x, data_y, rNorm = data['data_x'], data['data_y'], data['Normalization_Factor']
 num_data: int = np.shape(data_x)[0]
 print("Num of data points : " + str(num_data))
@@ -240,3 +240,6 @@ plt.xlim(-50, 150)
 plt.ylim(-50, 150)
 plt.title(' Test & Predicted confusion matrix')
 plt.show()
+
+
+#%% dummy test
