@@ -5,17 +5,15 @@ Created on Sun JAN 12 14:00:13 2020
 
 @author: udhay
 """
-########################################################################################################
-###This file loads parsed_data, builds a 6-layer convolutional neural network, and prints the results###
-###Data is obtained by running raw_data_parsing.py on airfoil figures and CFD-calculated cl/cd values###
-###Data: this file used a sample 1_300.mat, which means #1~#300 airfoil data, which includes:        ###
-###data_x ( a 6855*16384 binary matrix), data_y (a 6855*1 matrix), and a normalization factor (309)  ###
-###Structure: a well-tuned 4-conv-layer followed by 2-fc-layer network, with trick of batch norm, etc###
-###Training: train and test with GPU on Alienware with GTX 1080 Ti graphics                          ###
-###MSE result: train loss is 0.06415, validation/test loss is 0.36484 after 200 epochs               ###
-###With a well-trained cnn, cl/cd prediction speed can be 5k X faster than matured CFD software      ###
-###Please modify loading for more data (totally around 1550 foil types, only 1~300 is shown here)    ###
-########################################################################################################
+# This file loads parsed_data, builds a 6-layer convolutional neural network, and prints the results
+# Data is obtained by running raw_data_parsing.py on airfoil figures and CFD-calculated cl/cd values
+# Data: this file used a sample 1_300.mat, which means #1~#300 airfoil data, which includes:
+# data_x ( a 6855*16384 binary matrix), data_y (a 6855*1 matrix), and a normalization factor (309)
+# Structure: a well-tuned 4-conv-layer followed by 2-fc-layer network, with trick of batch norm, etc
+# Training: train and test with GPU on Alienware with GTX 1080 Ti graphics
+# MSE result: train loss is 0.06415, validation/test loss is 0.36484 after 200 epochs
+# With a well-trained cnn, cl/cd prediction speed can be 5k X faster than matured CFD software
+# Please modify loading for more data (totally around 1550 foil types, only 1~300 is shown here)
 
 # %% import file
 import numpy as np
@@ -28,7 +26,7 @@ import scipy.io
 import time
 
 # %% load data
-data = scipy.io.loadmat('../data/parsed_data/1_300.mat')
+data = scipy.io.loadmat('./all_data.mat')
 data_x, data_y, rNorm = data['data_x'], data['data_y'], data['Normalization_Factor']
 num_data: int = np.shape(data_x)[0]
 print("Num of data points : " + str(num_data))
@@ -36,6 +34,9 @@ train_x, train_y = data_x[:int(0.7 * num_data)], data_y[:int(0.7 * num_data)]  #
 # the model
 valid_x, valid_y = data_x[int(0.2 * num_data):int(0.9 * num_data)], data_y[int(0.2 * num_data):int(0.9 * num_data)]
 test_x, test_y = data_x[int(0.9 * num_data):], data_y[int(0.9 * num_data):]
+
+
+#%% data analysis
 
 
 # %%
