@@ -30,6 +30,7 @@ pandas.options.display.max_rows = 100
 
 #%% read labels
 data = pandas.read_csv('../data/raw_data/csv/1_100.csv')
+data = pandas.read_csv('../data/raw_data/csv/461_480.csv')
 #%%
 data.info()
 #%%
@@ -101,3 +102,4 @@ import matplotlib.pyplot as plt
 img = data_x[5].reshape(128, 128)
 plt.imshow(img)
 plt.show()
+scipy.io.savemat('all_data.mat', {'data_x': data_x, 'data_y': data_y, 'Normalization_Factor': [ymax]})
