@@ -29,7 +29,7 @@ pandas.options.display.max_columns = 100
 pandas.options.display.max_rows = 100
 
 #%% read labels
-data = pandas.read_csv('../data/raw_data/csv/461_480.csv')
+data = pandas.read_csv('../data/raw_data/csv/1_100.csv')
 #%%
 data.info()
 #%%
@@ -93,4 +93,11 @@ data_y = np.array([data_y]).reshape(-1, 1)
 ymax = np.max(data_y)
 data_y = data_y / ymax
 data_x = np.array(data_x)
-scipy.io.savemat('all_data.mat', {'data_x': data_x, 'data_y': data_y, 'Normalization_Factor': [ymax]})
+scipy.io.savemat('../data/parsed_data/1_400.mat', {'data_x': data_x, 'data_y': data_y, 'Normalization_Factor': [ymax]})
+
+
+#%%
+import matplotlib.pyplot as plt
+img = data_x[5].reshape(128, 128)
+plt.imshow(img)
+plt.show()

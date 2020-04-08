@@ -241,5 +241,56 @@ plt.ylim(-50, 150)
 plt.title(' Test & Predicted confusion matrix')
 plt.show()
 
+#%% save the model
+torch.save(neural_net, '../result/airfoil-model.pth')
+torch.save(neural_net.state_dict(), '../result/model_params.pth')
 
 #%% dummy test
+from PIL import Image, ImageDraw
+import numpy as np
+
+img: Image = Image.open('/Users/udhayakumar/Desktop/Screenshot 2020-03-02 at 5.24.53 PM.png')
+img.thumbnail((128, 128))
+# img.show()
+img.size
+# img.save('test.png')
+#%%
+blank_image = Image.new('RGBA', (128, 128), 'white')
+blank_image.show()
+
+#%%
+image_copy = blank_image.copy()
+position = (0, blank_image.width//2)
+image_copy.paste(img, position, img)
+image_copy.show()
+#%%
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+neural_net = Net1().to(device)
+
+images = torch.Tensor(np.array(img))
+images = images.reshape(-1, 1, 128, 128)
+pred = neural_net(images.to(device))
+
+#%%
+[x.cpu().data.numpy() for x in pred] * rNorm
+
+#%%
+import cv2
+# img = cv2.imread('/Users/udhayakumar/Desktop/Screenshot 2020-03-02 at 5.24.53 PM.png',0)#
+# ret,thresh2 = cv2.threshold(img, 128, 128, cv2.THRESH_BINARY_INV)
+# opening = cv2.morphologyEx(thresh2, cv2.MORPH_OPEN, k2)
+# cv2.imshow('opening', opening)
+# dilate = cv2.morphologyEx(opening, cv2.MORPH_DILATE, k1)
+# cv2.imshow('dilation', dilate)
+
+shape = 4
+_, axis = plt.subplots(shape, shape)
+
+for i in range(shape):
+    for j in range(shape):
+        image = data_x[i + j].reshape(128, 128)
+        axis[i][j].imshow(image)
+
+
+plt.show()
